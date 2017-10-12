@@ -6,6 +6,8 @@ class Repository(models.Model):
     title = models.CharField(max_length=150)
     created_date = models.DateTimeField(default=timezone.now)
 
+    path = models.CharField(max_length=2048)
+
     def __str__(self):
         return self.title
 
