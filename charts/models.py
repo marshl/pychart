@@ -9,6 +9,9 @@ class Repository(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "repositories"
+
 
 class Commit(models.Model):
     repo = models.ForeignKey(Repository)
