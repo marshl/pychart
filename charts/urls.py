@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'^repo/(?P<pk>\d+)/$', views.repo_detail, name='repo_detail'),
     url(r'^repo/(?P<pk>\d+)/reload$', views.repo_reload, name='repo_reload'),
     url(r'^repo/(?P<pk>\d+)/reset', views.repo_reset, name='repo_reset'),
+    url(r'^get_chart_data', views.get_chart_data, name='get_chart_data'),
 ]
