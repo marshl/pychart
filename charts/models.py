@@ -19,57 +19,21 @@ class Repository(models.Model):
     class Meta:
         verbose_name_plural = "repositories"
 
-    def get_repo(self):
+    def get_git_repo(self):
         return git.Repo(self.path)
 
-    def get_commits(self, repo):
-        # return self.get_repo().tree().list_traverse()
-        # Use active branch
-        # TODO: Use user specified branch instead
-        return repo.iter_commits()
-
     def load_commits(self):
-        repo = self.get_repo()
+        repo = self.get_git_repo()
 
-        # head_commit = self.get_repo().commit()
-        # diff = head_commit.diff(head_commit.hexsha + '~1', create_patch=True, ignore_blank_lines=True,
-        #            ignore_space_at_eol=True, diff_filter='cr')
-
-        for c in self.get_commits(repo):
-
-            if Commit.objects.filter(hex_sha=c.hexsha).exists():
+        for git_commit in repo.iter_commits():
+            if Commit.objects.filter(hex_sha=git_commit.hexsha).exists():
                 continue
 
-            print(c.hexsha)
-            # print(c.author)
-            commit = Commit()
-            commit.repo = self
-            commit.author = c.author
-            commit.authored_datetime = c.authored_datetime
-            commit.message = c.message
-            commit.hex_sha = c.hexsha
-            commit.bin_sha = c.binsha
-            commit.committed_datetime = c.committed_datetime
-            commit.count = c.count()
-
-            try:
-                # diffs = c.diff(c.hexsha + '~1', create_patch=True, ignore_blank_lines=True,
-                #               ignore_space_at_eol=True, diff_filter='cr')
-                diffs = c.diff(c.hexsha, create_patch=True, ignore_blank_lines=True,
-                               ignore_space_at_eol=True, diff_filter='adm')
-
-                # diff_text = '\n'.join([x.diff for x in diffs])
-                diff_text = '\n'.join([str(x) for x in diffs])
-                commit.line_additions = len(re.findall('^\+ ', diff_text, re.MULTILINE))
-                commit.line_subtractions = len(re.findall('^- ', diff_text, re.MULTILINE))
-            except git.GitCommandError:
-                pass
-
+            commit = Commit(self, git_commit)
             commit.save()
-            # print(commit.message)
-            # print('Removed: ' + str(commit.line_additions))
-            # print('Removed: ' + str(commit.line_subtractions))
-            # print(diff_text)
+
+    def delete_commits(self):
+        Commit.objects.filter(repo=self).delete()
 
 
 class Commit(models.Model):
@@ -89,3 +53,31 @@ class Commit(models.Model):
 
     def __str__(self):
         return self.hex_sha
+
+
+class RepositoryManager(models.Manager):
+    def create_repo(self, title, path):
+        repo = self.create(title=title, path=path)
+        repo.save()
+
+
+class CommitManager(models.Manager):
+    def create_commit(self, repo: git.Repo, commit: git.Commit):
+        c = self.create(repo=repo)
+        c.author = commit.author
+        c.authored_datetime = commit.authored_datetime
+        c.message = commit.message
+        c.hex_sha = commit.hexsha
+        c.bin_sha = commit.binsha
+        c.committed_datetime = commit.committed_datetime
+        c.count = commit.count()
+
+        try:
+            diffs = commit.diff(commit.hexsha, create_patch=True, ignore_blank_lines=True,
+                                ignore_space_at_eol=True, diff_filter='adm')
+
+            diff_text = '\n'.join([str(x) for x in diffs])
+            c.line_additions = len(re.findall('^\+ ', diff_text, re.MULTILINE))
+            c.line_subtractions = len(re.findall('^- ', diff_text, re.MULTILINE))
+        except git.GitCommandError:
+            pass
