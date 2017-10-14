@@ -1,0 +1,11 @@
+{% extends 'charts/base.html' %}
+
+{% block content %}
+<div class="repo">
+    <div class="date">Date:
+        {{ repo.created_date}}
+    </div>
+    <h1>{{ repo.title }}</h1>
+    <p>{{ repo.path }}</p>
+</div>
+{% endblock %}

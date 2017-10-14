@@ -6,7 +6,7 @@
     <div class="date">
         <p>created: {{ repo.created_date }}</p>
     </div>
-    <h1><a href="">{{ repo.title }}</a></h1>
+    <h1><a href="{% url 'repo_detail' pk=repo.pk %}">{{ repo.title }}</a></h1>
     <p>{{ repo.path }}</p>
 </div>
 {% endfor %}
