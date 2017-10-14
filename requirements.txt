@@ -1,5 +1,6 @@
 Django==1.11.6
 gitdb2==2.0.3
 GitPython==2.1.7
+numpy==1.13.3
 pytz==2017.2
 smmap2==2.0.3
