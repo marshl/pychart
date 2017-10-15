@@ -62,7 +62,7 @@ class CommitManager(models.Manager):
             c.line_subtractions = len(re.findall(r'^- ', diff_text, re.MULTILINE))
         except git.GitCommandError:
             pass
-        print(vars(c))
+
         return c
 
 
