@@ -29,13 +29,8 @@ def repo_reset(request, pk):
     return redirect('repo_detail', pk=pk)
 
 
-def get_chart_data(request):
-    repo = Repository.objects.all()[1]
-    # authors = []
-    # for c in repo.commit_set.all():
-    #     authors.append(c.author)
-    #
-    # print(authors)
+def get_repo_author_total(request, pk):
+    repo = get_object_or_404(Repository, pk=pk)
     authors = pd.Series([x.author for x in repo.commit_set.all()])
     df = pd.DataFrame({'count': 1, 'author': authors})
     series = df.groupby('author')['count'].sum()
@@ -46,12 +41,6 @@ def get_chart_data(request):
             {"id": "", "label": "Commits", "pattern": "", "type": "number"}
         ],
         'rows': series_to_rows(series)
-        # "rows": [
-        #     {"c": [{"v": "Andrew Pigram", "f": None}, {"v": 27, "f": None}]},
-        #     {"c": [{"v": "Liam Marshall", "f": None}, {"v": 160, "f": None}]},
-        #     {"c": [{"v": "Vegemash", "f": None}, {"v": 9, "f": None}]},
-        #     {"c": [{"v": "prathyusha sama", "f": None}, {"v": 4, "f": None}]},
-        # ]
     }
 
     return JsonResponse(result, safe=False)
