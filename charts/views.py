@@ -32,8 +32,7 @@ def repo_reset(request, pk):
 def get_repo_author_total(request, pk):
     repo = get_object_or_404(Repository, pk=pk)
     authors = pd.Series([x.author for x in repo.commit_set.all()])
-    df = pd.DataFrame({'count': 1, 'author': authors})
-    series = df.groupby('author')['count'].sum()
+    series = authors.value_counts()
 
     result = {
         "cols": [
