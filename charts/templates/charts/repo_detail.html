@@ -7,15 +7,19 @@ $(document).ready(function() {
     google.charts.load('current', {'packages':['corechart']});
 
     // Set a callback to run when the Google Visualization API is loaded.
-    google.charts.setOnLoadCallback(drawChart);
+    google.charts.setOnLoadCallback(loadChart);
 
-    function drawChart() {
+    function loadChart() {
       var jsonData = $.ajax({
           url: "get_repo_author_total",
           dataType: "json",
-          async: false
+          async: true,
+          success: drawChart
           }).responseText;
 
+    }
+
+    function drawChart(jsonData) {
       // Create our data table out of JSON data loaded from server.
       var data = new google.visualization.DataTable(jsonData);
 
