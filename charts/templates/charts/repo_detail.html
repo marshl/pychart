@@ -23,6 +23,13 @@ $(document).ready(function() {
           async: true,
           success: drawCommitsPerDayChart
       });
+
+       $.ajax({
+          url: "get_commit_frequency",
+          dataType: "json",
+          async: true,
+          success: drawCommitFrequencyChart
+      });
     }
 
     function drawAuthorChart(jsonData) {
@@ -52,6 +59,21 @@ $(document).ready(function() {
       var chart = new google.visualization.LineChart(document.getElementById('commits_per_day_div'));
       chart.draw(data, options);
     }
+
+    function drawCommitFrequencyChart(jsonData) {
+
+        var data = new google.visualization.DataTable(jsonData);
+
+        var options = {
+            title: 'Commits per hour during the week',
+            hAxis: {title: 'Hour'},
+            vAxis: {title: 'Day'},
+            bubble: {textStyle: {fontSize: 11}}
+          };
+
+          var chart = new google.visualization.BubbleChart(document.getElementById('commit_frequency_div'));
+          chart.draw(data, options);
+    }
 });
 
 
@@ -69,5 +91,6 @@ $(document).ready(function() {
 
 <div id="author_chart_div"></div>
 <div id="commits_per_day_div"></div>
+<div id="commit_frequency_div" style="width: 900px; height: 500px;"></div>
 
 {% endblock %}

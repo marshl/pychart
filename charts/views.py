@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from .models import Repository
+import time
+from datetime import datetime, timedelta, timezone
 
 
 # Create your views here.
@@ -57,6 +59,17 @@ def get_commits_per_day(request, pk):
     series = df.groupby('commit_date').size().asfreq('1d', fill_value=0)
     d = series.to_dict()
 
+    # repo = get_object_or_404(Repository, pk=pk)
+    # # commits = pd.Series([x.committed_datetime for x in repo.commit_set.all()])
+    # # series = commits.value_counts()
+    # commits = repo.commit_set.all()
+    # df = pd.DataFrame({'commit_date': pd.Series([x.committed_datetime for x in commits])})
+    # for author in set([x.author for x in commits]):
+    #     df[author] = pd.Series([x.committed_datetime for x in commits if x.author == author])
+    #
+    # series = df.groupby('commit_date').size().asfreq('1d', fill_value=0)
+    # d = series.to_dict()
+
     result = {
         "cols": [
             {"id": "", "label": "Date", "pattern": "", "type": "date"},
@@ -71,9 +84,38 @@ def get_commits_per_day(request, pk):
     return JsonResponse(result, safe=False)
 
 
-def series_to_rows(series: pd.Series):
-    d = series.to_dict()
-    return
+def get_commit_frequency(request, pk):
+    repo = get_object_or_404(Repository, pk=pk)
+    # df = pd.DataFrame()
+    days = 7
+    hours = 24
+    # df['hours'] = pd.Series([hour for day in range(days) for hour in range(hours)])
+    # df['days'] = pd.Series([day for hour in range(hours) for day in range(days)])
+
+    commits = [0 for day in range(days) for hour in range(hours)]
+    for commit in repo.commit_set.all():
+        d = commit.committed_datetime + timedelta(seconds=time.localtime().tm_gmtoff)
+        day = d.weekday()
+        hour = d.hour
+        commits[day * hours + hour] += 1
+        print(f'Hour: {hour} day: {day}')
+
+    result = {
+        "cols": [
+            {"id": "", "label": "Commits", "pattern": "", "type": "string"},
+            {"id": "", "label": "Hour", "pattern": "", "type": "number"},
+            {"id": "", "label": "Day", "pattern": "", "type": "number"},
+            {"id": "", "label": "Commits", "pattern": "", "type": "number"},
+        ],
+        'rows':
+            [{'c': [
+                {'v': str(commits[day * hours + hour])}, {'v': hour},
+                {'v': day, 'f': ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'][day]},
+                {'v': commits[day * hours + hour] if commits[day * hours + hour] > 0 else None}
+            ]} for day in range(days) for hour in range(hours)]
+    }
+
+    return JsonResponse(result, safe=False)
 
 
 def date_to_json(date):

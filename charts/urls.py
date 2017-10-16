@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^repo/(?P<pk>\d+)/reset', views.repo_reset, name='repo_reset'),
     url(r'^repo/(?P<pk>\d+)/get_repo_author_total', views.get_repo_author_total, name='get_repo_author_total'),
     url(r'^repo/(?P<pk>\d+)/get_commits_per_day', views.get_commits_per_day, name='get_commits_per_day'),
+    url(r'^repo/(?P<pk>\d+)/get_commit_frequency', views.get_commit_frequency, name='get_commit_frequency'),
 ]
