@@ -38,8 +38,8 @@ $(document).ready(function() {
       var options = {
         title: 'Authors',
         is3D: true,
-        width: 900,
-        height: 500,
+        width: 450,
+        height: 250,
       };
 
       var chart = new google.visualization.PieChart(document.getElementById('author_chart_div'));
@@ -52,8 +52,8 @@ $(document).ready(function() {
       var options = {
         title: 'Commits',
         is3D: true,
-        width: 900,
-        height: 500,
+        width: 450,
+        height: 250,
       };
 
       var chart = new google.visualization.LineChart(document.getElementById('commits_per_day_div'));
@@ -65,16 +65,31 @@ $(document).ready(function() {
         var data = new google.visualization.DataTable(jsonData);
 
         var options = {
-            title: 'Commits per hour during the week',
+            title: 'Commits per hour of the week',
+            width: 900,
+            height: 500,
             hAxis: {title: 'Hour'},
             vAxis: {title: 'Day'},
-            bubble: {textStyle: {fontSize: 11}}
+            bubble: {textStyle: {fontSize: 11}},
+            colorAxis: {colors: ['white', 'blue']},
+            hAxis: {minValue: 0, maxValue: 24},
+            vAxis: {minValue: 0, maxValue: 7, ticks: [
+                {'v': 1, 'f': 'Monday'},
+                {'v': 2, 'f': 'Tuesday'},
+                {'v': 3, 'f': 'Wednesday'},
+                {'v': 4, 'f': 'Thursday'},
+                {'v': 5, 'f': 'Friday'},
+                {'v': 6, 'f': 'Saturday'},
+                {'v': 7, 'f': 'Sunday'}
+            ]},
           };
 
           var chart = new google.visualization.BubbleChart(document.getElementById('commit_frequency_div'));
           chart.draw(data, options);
     }
 });
+
+
 
 
 </script>
@@ -89,8 +104,10 @@ $(document).ready(function() {
     <a href="{% url 'repo_reset' pk=repo.pk %}">Reset Commits</a>
 </div>
 
-<div id="author_chart_div"></div>
-<div id="commits_per_day_div"></div>
-<div id="commit_frequency_div" style="width: 900px; height: 500px;"></div>
+<div style="display: flex">
+    <div id="author_chart_div"></div>
+    <div id="commits_per_day_div" style="flex-grow: 1"></div>
+</div>
+<div id="commit_frequency_div"></div>
 
 {% endblock %}

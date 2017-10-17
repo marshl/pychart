@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from .models import Repository
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 
 
 # Create your views here.
@@ -98,7 +98,6 @@ def get_commit_frequency(request, pk):
         day = d.weekday()
         hour = d.hour
         commits[day * hours + hour] += 1
-        print(f'Hour: {hour} day: {day}')
 
     result = {
         "cols": [
@@ -106,12 +105,15 @@ def get_commit_frequency(request, pk):
             {"id": "", "label": "Hour", "pattern": "", "type": "number"},
             {"id": "", "label": "Day", "pattern": "", "type": "number"},
             {"id": "", "label": "Commits", "pattern": "", "type": "number"},
+            {"id": "", "label": "Commits", "pattern": "", "type": "number"},
         ],
         'rows':
             [{'c': [
-                {'v': str(commits[day * hours + hour])}, {'v': hour},
-                {'v': day, 'f': ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'][day]},
-                {'v': commits[day * hours + hour] if commits[day * hours + hour] > 0 else None}
+                {'v': str(commits[day * hours + hour])},
+                {'v': hour, 'f': f'{hour}:00'},
+                {'v': day + 1, 'f': date(2001, 1, day + 1).strftime('%A')},
+                {'v': commits[day * hours + hour] if commits[day * hours + hour] > 0 else None},
+                {'v': commits[day * hours + hour]}
             ]} for day in range(days) for hour in range(hours)]
     }
 
