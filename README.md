@@ -1,7 +1,7 @@
 # PyChart
 Site for displaying statistical information about local Git repositories
 
-#Installation
+# Installation
 
 - Create the virtual environment
 `python3 -m venv myvenv`
