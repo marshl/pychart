@@ -1,11 +1,9 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import JsonResponse
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from .models import Repository
 import time
-from datetime import datetime, timedelta, timezone, date
+from datetime import timedelta, date
 
 
 # Create your views here.
