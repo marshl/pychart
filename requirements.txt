@@ -1,5 +1,5 @@
 cycler==0.10.0
-Django==1.11.6
+Django==1.11.23
 gitdb2==2.0.3
 GitPython==2.1.7
 matplotlib==2.1.0
