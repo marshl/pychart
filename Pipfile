@@ -6,10 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-django = "==1.11.6"
-matplotlib = "==2.1.0"
-pandas = "==0.20.3"
-GitPython = "==2.1.7"
+django = "==2.2.7"
+pandas = "==0.25.3"
+GitPython = "==3.0.5"
 
 [requires]
 python_version = "3.6"

@@ -72,7 +72,7 @@ class CommitManager(models.Manager):
 
 
 class Commit(models.Model):
-    repo = models.ForeignKey(Repository)
+    repo = models.ForeignKey(Repository, on_delete=models.CASCADE)
     author = models.CharField(max_length=150)
     message = models.TextField()
     hex_sha = models.CharField(max_length=40)
