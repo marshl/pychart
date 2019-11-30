@@ -7,19 +7,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('charts', '0001_initial'),
-    ]
+    dependencies = [("charts", "0001_initial")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='repository',
-            options={'verbose_name_plural': 'repositories'},
+            name="repository", options={"verbose_name_plural": "repositories"}
         ),
         migrations.AddField(
-            model_name='repository',
-            name='path',
-            field=models.CharField(default='temp', max_length=2048),
+            model_name="repository",
+            name="path",
+            field=models.CharField(default="temp", max_length=2048),
             preserve_default=False,
         ),
     ]

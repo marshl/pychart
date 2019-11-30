@@ -54,12 +54,17 @@ class CommitManager(models.Manager):
         c.count = commit.count()
 
         try:
-            diffs = commit.diff(commit.hexsha, create_patch=True, ignore_blank_lines=True,
-                                ignore_space_at_eol=True, diff_filter='adm')
+            diffs = commit.diff(
+                commit.hexsha,
+                create_patch=True,
+                ignore_blank_lines=True,
+                ignore_space_at_eol=True,
+                diff_filter="adm",
+            )
 
-            diff_text = '\n'.join([str(x) for x in diffs])
-            c.line_additions = len(re.findall(r'^\+ ', diff_text, re.MULTILINE))
-            c.line_subtractions = len(re.findall(r'^- ', diff_text, re.MULTILINE))
+            diff_text = "\n".join([str(x) for x in diffs])
+            c.line_additions = len(re.findall(r"^\+ ", diff_text, re.MULTILINE))
+            c.line_subtractions = len(re.findall(r"^- ", diff_text, re.MULTILINE))
         except git.GitCommandError:
             pass
 
